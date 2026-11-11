@@ -481,7 +481,7 @@ async function boot() {
     initMap(); bind();
     const initialHash = location.hash;
     const hashEvent = new URLSearchParams(initialHash.slice(1)).get('e');
-    selectEvent(EVENTS.some(e => e.id === hashEvent) ? hashEvent : EVENTS[0].id);
+    selectEvent(EVENTS.some(e => e.id === hashEvent) ? hashEvent : EVENTS[1].id);
     history.replaceState(null, '', initialHash || '#');
     readHash();
     renderAll();
