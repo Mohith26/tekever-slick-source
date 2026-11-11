@@ -185,7 +185,7 @@ function renderPanel() {
   $('#fCentroid').textContent = dmsLL(ev.centroid);
   document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-checked', String(+b.dataset.conf === state.conf)));
   const lvl = RESULTS.levels[confKey(state.conf)];
-  $('#summary').innerHTML = `<span class="big">${a.setNow.length} suspect${a.setNow.length === 1 ? '' : 's'}</span> of <b>${a.cand.length}</b> vessels that passed within 25 km in the 12 h before detection. Lists at this level held the polluter in <b>${(lvl.coverage * 100).toFixed(1)}%</b> of ${RESULTS.test} held-out cases.`;
+  $('#summary').innerHTML = `<span class="big">${a.setNow.length} suspect${a.setNow.length === 1 ? '' : 's'}</span> of <b>${a.cand.length}</b> vessels that passed within 25 km in the 12 h before detection. Lists at this level held the polluter in <b>${(lvl.coverage * 100).toFixed(1)}%</b> of ${RESULTS.test} held-out cases.${(state.flagged[ev.id] || []).length ? ` <b>${state.flagged[ev.id].length}</b> flagged for inspection.` : ''}`;
   const inSet = new Set(a.setNow);
   const rows = a.rows.slice(0, Math.max(a.setNow.length + 3, 8));
   let html = '', dividerDone = false;
@@ -362,7 +362,7 @@ function evidence(onlyMmsi) {
   const ev = current(), a = analysis(ev), lvl = RESULTS.levels[confKey(state.conf)];
   const rows = a.rows.filter(r => !onlyMmsi || AIS.vessels[r.vessel].mmsi === onlyMmsi).map(r => {
     const v = AIS.vessels[r.vessel];
-    return { rank: r.rank, mmsi: v.mmsi, imo: v.imo, name: v.name, type: v.type, length_m: v.len, posterior: +r.p.toPrecision(4),
+    return { rank: r.rank, mmsi: v.mmsi, imo: v.imo, call_sign: v.cs, name: v.name, type: v.type, length_m: v.len, ais_destination: v.dest, posterior: +r.p.toPrecision(4),
       in_suspect_list: a.setNow.includes(r.vessel), closest_approach_m: Number.isFinite(r.bestDist) ? Math.round(r.bestDist) : null,
       est_discharge_end_utc: r.bestK >= 0 ? new Date((ev.tObs - r.bestK * D.STEP_S) * 1000).toISOString() : null, flagged: isFlagged(ev, v.mmsi) };
   });
