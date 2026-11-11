@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEKEVER ATLAS · Slick Source</title>
+<link rel="icon" href="https://www.tekever.com/wp-content/uploads/2026/02/cropped-logoKE2-2-32x32.png">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=pilcrow-rounded@400,500,600,700,800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,500,0..1,0&display=block">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+<script>window.__errs=[];addEventListener("error",e=>__errs.push(String(e.message)));addEventListener("unhandledrejection",e=>__errs.push(String(e.reason)));</script>
+</head>
+<body>
+<div id="app" class="app">
+  <nav class="rail" aria-label="Main navigation">
+    <div class="avatar" aria-label="Signed in user"><span class="ms fill">person</span></div>
+    <a class="rail-item" href="#" aria-label="COP"><span class="ms">sensors</span><span>COP</span></a>
+    <a class="rail-item" href="#" aria-label="Explorer"><span class="ms">search</span><span>Explorer</span></a>
+    <a class="rail-item active" href="#" aria-label="Missions" aria-current="page"><span class="ms fill">flight</span><span>Missions</span></a>
+    <a class="rail-item" href="#" aria-label="Users"><span class="ms">badge</span><span>Users</span></a>
+    <a class="rail-item" href="#" aria-label="Settings"><span class="ms fill">settings</span><span>Settings</span></a>
+    <div class="rail-sep"></div>
+    <a class="rail-item" href="#" aria-label="Chat"><span class="ms fill">chat</span><span>Chat</span></a>
+    <a class="rail-item" href="#" aria-label="Files"><span class="ms fill">file_save</span><span>Files</span></a>
+    <a class="rail-item logout" href="#" aria-label="Logout"><span class="ms">logout</span><span>Logout</span></a>
+  </nav>
+
+  <main class="stage">
+    <div id="map" class="map" role="application" aria-label="Mission map"></div>
+
+    <header class="mission-head">
+      <div class="mh-row">
+        <span class="ms back" aria-hidden="true">chevron_left</span>
+        <h1 id="missionTitle">Mission Skagerrak Pollution Patrol</h1>
+        <span class="pill done">Completed</span>
+        <span class="mh-label">Presentation</span>
+        <button class="toggle" id="presToggle" role="switch" aria-checked="false" aria-label="Presentation mode"><i></i><b>OFF</b></button>
+      </div>
+      <button class="mh-sub" id="btnValidation">View Calibration Report</button>
+    </header>
+
+    <div class="maptools" aria-label="Map tools">
+      <div class="tool-group"><button class="tool north" aria-label="North up"><b>N</b><span class="ms fill">navigation</span></button></div>
+      <div class="tool-group"><button class="tool" id="zin" aria-label="Zoom in"><span class="ms">add</span></button><button class="tool" id="zout" aria-label="Zoom out"><span class="ms">remove</span></button></div>
+      <div class="tool-group">
+        <button class="tool" aria-label="Measure"><span class="ms">straighten</span></button>
+        <button class="tool" id="btnRecenter" aria-label="Recenter on slick"><span class="ms">radio_button_checked</span></button>
+        <button class="tool" id="btnLayers" aria-label="Toggle drift cloud layer"><span class="ms fill">layers</span></button>
+        <button class="tool" aria-label="Basemap"><span class="ms fill">map</span></button>
+        <button class="tool" aria-label="Draw"><span class="ms fill">edit</span></button>
+      </div>
+    </div>
+
+    <section id="card" class="card hidden" role="dialog" aria-label="Vessel details"></section>
+
+    <section class="timeline" aria-label="Back-track timeline">
+      <div class="tl-head">
+        <h2>Back-track Timeline</h2><span class="tag-replay"><span class="ms">history</span>REPLAY</span>
+        <span class="tl-hint" id="tlHint"></span>
+        <span class="ms tl-collapse" aria-hidden="true">keyboard_arrow_up</span>
+      </div>
+      <div class="tl-body">
+        <div class="tl-labels" id="tlLabels"></div>
+        <div class="tl-grid" id="tlGrid" tabindex="0" aria-label="Timeline scrubber, use left and right arrows"></div>
+      </div>
+      <div class="tl-foot">
+        <button class="tlb" id="btnBack" aria-label="Step back"><span class="ms fill">fast_rewind</span></button>
+        <button class="tlb" id="btnPlay" aria-label="Play"><span class="ms fill">play_arrow</span></button>
+        <button class="tlb" id="btnFwd" aria-label="Step forward"><span class="ms fill">fast_forward</span></button>
+        <span class="speed">1x</span>
+        <span class="tl-offset" id="tlOffset">-00:00:00</span>
+        <span class="tl-clock" id="tlClock">--:--</span>
+      </div>
+    </section>
+
+    <div class="status">
+      <span class="chip" id="cursorPos">57° 30' 00.00" N 11° 18' 00.00" E</span>
+      <span class="chip">UTC +0</span>
+      <span class="chip brand"><img src="assets/tekever-logo-white.png" alt="TEKEVER"><b>ATLAS</b><i>V 1.18.2</i></span>
+    </div>
+  </main>
+
+  <aside class="side" aria-label="Analysis panels">
+    <div class="side-collapse"><span class="ms">start</span></div>
+    <section class="panel" id="sourcePanel">
+      <div class="p-head"><h2>Slick Source</h2><span class="ms fill pin">keep</span><span class="ms caret">keyboard_arrow_up</span></div>
+      <label class="f-label" for="findingSelect">Finding</label>
+      <div class="select"><select id="findingSelect" aria-label="Oil slick finding"></select><span class="ms">keyboard_arrow_down</span></div>
+      <div class="kv">
+        <div><label>Detected</label><b id="fDetected">-</b></div>
+        <div><label>Slick length</label><b id="fLength" class="blue">-</b></div>
+      </div>
+      <div class="kv"><div class="wide"><label>Slick centroid</label><b id="fCentroid">-</b></div></div>
+      <div class="conf">
+        <label>Suspect list confidence</label>
+        <div class="seg" role="radiogroup" aria-label="Confidence level">
+          <button role="radio" data-conf="0.8">80%</button><button role="radio" data-conf="0.9">90%</button><button role="radio" data-conf="0.95">95%</button>
+        </div>
+      </div>
+      <div class="summary" id="summary" aria-live="polite"></div>
+      <div class="suspects" id="suspects" role="listbox" aria-label="Suspect vessels"></div>
+      <div class="p-actions">
+        <button class="btn fill" id="btnExport"><span class="ms">download</span>Export Evidence</button>
+        <button class="btn outline" id="btnCsv">CSV</button>
+      </div>
+    </section>
+    <section class="panel findings">
+      <div class="p-head"><h2>Findings and Events</h2><span class="ms fill pin">keep</span><span class="ms caret">keyboard_arrow_up</span></div>
+      <div class="f-tools"><span><span class="ms">filter_list</span>Filters</span><span><span class="ms">search</span>Search</span><span><span class="ms">swap_vert</span>Sort by</span></div>
+      <div class="f-list" id="findings"></div>
+    </section>
+  </aside>
+
+  <div id="loading" class="overlay"><div class="spinner" aria-hidden="true"></div><p>Loading mission data</p></div>
+  <div id="error" class="overlay hidden" role="alert"><span class="ms">error</span><p id="errorText">Could not load mission data.</p><button class="btn fill" onclick="location.reload()">Retry</button></div>
+  <div id="validation" class="modal hidden" role="dialog" aria-modal="true" aria-label="Calibration report"></div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <footer class="disclaimer">Unofficial concept demo by Mohith Gajjela. Not affiliated with TEKEVER. Public AIS (Danish Maritime Authority) + Open-Meteo; simulated discharges. Map: Esri, OSM. <a href="https://github.com/Mohith26/tekever-slick-source">Source</a> · <kbd>?</kbd> keys</footer>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
